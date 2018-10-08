@@ -104,6 +104,7 @@ function newConnection(socket){
       }
 
     function reset(){
+      io.sockets.emit('leaderboard', players);
       players.splice(0, players.length);
       // for(let i=0; i<players.length; i++){
       //   players[i].score = 0;

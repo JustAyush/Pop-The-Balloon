@@ -5,14 +5,14 @@ var b;
 var canvas;
 var welcome = false;
 var scoreDisplay = [];
+var leaderboard;
 
 function setup(){
   canvas = createCanvas(0.72*windowWidth, windowHeight);
   canvas.position(windowWidth/7, 0);
   background(0);
 
-  // scoreDisplay = createP(' ');
-  // scoreDisplay.position(10, 10);
+  leaderboard = select('#leaderboard');
 
   socket = io.connect('http://localhost:8000');
   socket.on('greet', function(data){
@@ -66,6 +66,23 @@ function setup(){
     scoreDisplay.splice(0, scoreDisplay.length);
     resetGame();
   });
+
+  socket.on('leaderboard',
+  function(data){
+    var leaderstat = "Leaderboard<br/><br/>";
+    data.sort(compare);
+    for(let i=0; i<data.length; i++){
+        leaderstat = leaderstat + data[i].name + " " + data[i].score + "<br/>";
+      }
+    leaderboard.html(leaderstat);
+  });
+  function compare(a, b){
+    if(a.score < b.score)
+      return 1;
+    if(a.score > b.score)
+      return -1;
+    return 0;
+  }
 
 
 }

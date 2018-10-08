@@ -24,6 +24,7 @@
     <div class="modal">
     <div class="modal-content">
         <p id="gameStarting"> Other players are connecting...</p>
+        <p id="leaderboard"> </p>
         <p id="input">
         <input type="text" id="name" />
         <button id="start" onclick="startGame()"> Start </button>
@@ -50,6 +51,7 @@
     socket.emit('ready', "ready");
     document.getElementById('gameStarting').style.visibility = "visible";
     document.getElementById('input').style.visibility = "hidden";
+    document.getElementById('leaderboard').innerHTML = ' ';
   }
 
   function resetGame(){
