@@ -14,6 +14,8 @@ var count = 1;
 var countforPlayer = 1;
 var players = [];
 var playerAdded = false;
+var firstPlayer = true;
+var hb;
 
 function player(id, name, score){
   this.id = id;
@@ -51,10 +53,11 @@ function newConnection(socket){
           else{
             var p = new player(socket.id, data, 0);
             console.log(p);
-            socket.emit('createP', "CreateP");
+          //  socket.emit('createP', "CreateP");
             players.push(p);
-            playerAdded = true;
+            //playerAdded = true;
             countforPlayer = 1;
+
           }
         }
       );
@@ -72,23 +75,69 @@ function newConnection(socket){
             if(socket.id == players[i].id)
               players[i].score++;
           }
-          //currentp.score++;
-          //io.to(socket.id).emit('YourScore', currentp.score);
+          if(balons.length == 0)
+            reset();
           }
         });
+
+        socket.on('ready',
+          function(data){
+            //after 10 secs, it should return true
+            if(firstPlayer){
+              setTimeout(readySignal, 10000);
+              firstPlayer = false;
+            }
+          });
+        function readySignal(){
+          io.sockets.emit('ready', true);
+          sendBeat();
+        }
+        function sendBeat(){
+          hb = setInterval(heartbeat, 1000);
+          io.sockets.emit('createP', players.length );
+          function heartbeat(){
+            io.sockets.emit('greet', players);
+          }
+        }
+
+
+      }
+
+    function reset(){
+      players.splice(0, players.length);
+      // for(let i=0; i<players.length; i++){
+      //   players[i].score = 0;
+      // }
+      clearInterval();
+      count = 1;
+      countforPlayer = 1;
+      playerAdded = false;
+      firstPlayer = true;
+      for(let i=0; i<5; i++){
+        var b= {
+          x: getRandom(0, 500),
+          y: getRandom(0, 500),
+          r: 20
+        };
+        balons.push(b);
+      }
+      io.sockets.emit('reset', "reset");
+      for(let i=0; i<balons.length; i++){
+        var bSendReset = {
+          x: balons[i].x,
+          y: balons[i].y,
+          r: balons[i].r
+        }
+      io.sockets.emit('welcome', bSendReset);
+      }
+      console.log("reset");
     }
-}
+
+    }
 
 console.log('Server is running');
 
-setInterval(heartbeat, 1000);
-function heartbeat(){
-  io.sockets.emit('greet', players);
-  if(playerAdded){
-      io.sockets.emit('createP', "CreateP");
-  }
-  playerAdded = false;
-}
+
 
 
 function getRandom(min, max) {

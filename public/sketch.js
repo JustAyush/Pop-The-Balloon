@@ -2,9 +2,7 @@
 var socket;
 var balloons = [];
 var b;
-var totalBalloons = 20;
 var canvas;
-var start;
 var welcome = false;
 var scoreDisplay = [];
 
@@ -13,17 +11,16 @@ function setup(){
   canvas.position(windowWidth/7, 0);
   background(0);
 
-  //scoreDisplay = createP(' ');
-  //scoreDisplay.position(10, 10);
+  // scoreDisplay = createP(' ');
+  // scoreDisplay.position(10, 10);
 
   socket = io.connect('http://localhost:8000');
   socket.on('greet', function(data){
     for(let i=0; i<data.length; i++){
       //console.log(data[i].name + " " + data[i].score);
-
-        //scoreDisplay[i].html(data[i].name + " " + data[i].score);
-    }
-    console.log(scoreDisplay.length + " " + data.length);
+      if(scoreDisplay.length > 0)
+        scoreDisplay[i].html(data[i].name + " " + data[i].score);
+      }
   });
 
   socket.on('welcome', function(data){
@@ -47,10 +44,28 @@ function setup(){
 
   socket.on('createP',
     function(data){
-      var s = createP(' ');
-      scoreDisplay.push(s);
+      for(let i=0; i<data; i++){
+        var s = createP(' ');
+        scoreDisplay.push(s);
+      }
+    });
+
+  socket.on('ready',
+    function(data){
+      if(data)
+        toggleModal();
+        play = true;
     }
   );
+
+  socket.on('reset',
+  function(data){
+    console.log("Reset");
+    for(let i=0; i<scoreDisplay.length; i++)
+      scoreDisplay[i].remove();
+    scoreDisplay.splice(0, scoreDisplay.length);
+    resetGame();
+  });
 
 
 }

@@ -20,11 +20,14 @@
       height: 100%;
     }
   </style>
-  <body onload="toggleModal();">
+  <body onload="toggleModal()">
     <div class="modal">
     <div class="modal-content">
+        <p id="gameStarting"> Other players are connecting...</p>
+        <p id="input">
         <input type="text" id="name" />
         <button id="start" onclick="startGame()"> Start </button>
+        </p>
     </div>
   </div>
   <script>
@@ -32,17 +35,31 @@
   var name;
 
   var modal = document.querySelector(".modal");
+  document.getElementById('gameStarting').style.visibility = "hidden";
+  document.getElementById('input').style.visibility = "visible";
 
   function toggleModal() {
       modal.classList.toggle("show-modal");
   }
 
   function startGame(){
-    toggleModal();
-    play = true;
+  //  toggleModal();
+  //  play = true;
     name = document.getElementById("name").value;
     socket.emit('player', name);
+    socket.emit('ready', "ready");
+    document.getElementById('gameStarting').style.visibility = "visible";
+    document.getElementById('input').style.visibility = "hidden";
   }
+
+  function resetGame(){
+    play = false;
+    welcome = false;
+    document.getElementById('gameStarting').style.visibility = "hidden";
+    document.getElementById('input').style.visibility = "visible";
+    toggleModal();
+  }
+
 
   </script>
   </body>
