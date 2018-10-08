@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pop The Balloon</title>
+    <script src="libraries/p5.js"></script>
+    <script src="libraries/p5.dom.js"></script>
+    <script src="libraries/p5.sound.js"></script>
+
+    <script src="sketch.js"></script>
+    <script src="balloon.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+  </head>
+  <style>
+    canvas{
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <body onload="toggleModal();">
+    <div class="modal">
+    <div class="modal-content">
+        <input type="text" id="name" />
+        <button id="start" onclick="startGame()"> Start </button>
+    </div>
+  </div>
+  <script>
+  var play = false;
+  var name;
+
+  var modal = document.querySelector(".modal");
+
+  function toggleModal() {
+      modal.classList.toggle("show-modal");
+  }
+
+  function startGame(){
+    toggleModal();
+    play = true;
+    name = document.getElementById("name").value;
+    socket.emit('player', name);
+  }
+
+  </script>
+  </body>
+  </html>
