@@ -32,7 +32,9 @@ function setup(){
   gameName.position(width/2,25);
   gameName.style('z-index','1');
 
-  socket = io.connect('http://localhost:8000');
+  //socket = io.connect('http://localhost:8000');
+  socket = io.connect();
+
   socket.on('greet', function(data){
     for(let i=0; i<data.length; i++){
       if(scoreDisplay.length > 0)
