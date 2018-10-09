@@ -91,7 +91,7 @@ function newConnection(socket){
         socket.on('ready',
           function(data){
             if(firstPlayer){
-              setTimeout(readySignal, 5000);
+              setTimeout(readySignal, 12000);
               firstPlayer = false;
             }
           });
