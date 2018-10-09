@@ -9,7 +9,7 @@ var app = express();
 // var socket = require('socket.io');
 // var io = socket(server);
 
-var server = app.listen(process.env.PORT || 3000, listen);
+var server = app.listen(process.env.PORT || 5000, listen);
 
 function listen() {
   var host = server.address().address;
@@ -91,7 +91,7 @@ function newConnection(socket){
         socket.on('ready',
           function(data){
             if(firstPlayer){
-              setTimeout(readySignal, 15000);
+              setTimeout(readySignal, 5000);
               firstPlayer = false;
             }
           });
