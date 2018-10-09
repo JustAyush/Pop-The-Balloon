@@ -52,10 +52,7 @@ function newConnection(socket){
           }
           else{
             var p = new player(socket.id, data, 0);
-            console.log(p);
-          //  socket.emit('createP', "CreateP");
             players.push(p);
-            //playerAdded = true;
             countforPlayer = 1;
 
           }
@@ -70,7 +67,6 @@ function newConnection(socket){
           io.sockets.emit('remove', data);
           balons.splice(data, 1);
           count = 1;
-          //var currentp;
           for(let i=0; i<players.length; i++){
             if(socket.id == players[i].id)
               players[i].score++;
@@ -82,9 +78,8 @@ function newConnection(socket){
 
         socket.on('ready',
           function(data){
-            //after 10 secs, it should return true
             if(firstPlayer){
-              setTimeout(readySignal, 10000);
+              setTimeout(readySignal, 15000);
               firstPlayer = false;
             }
           });
@@ -93,22 +88,24 @@ function newConnection(socket){
           sendBeat();
         }
         function sendBeat(){
-          hb = setInterval(heartbeat, 1000);
+          hb = setInterval(heartbeat, 1000/4);
           io.sockets.emit('createP', players.length );
           function heartbeat(){
             io.sockets.emit('greet', players);
           }
         }
-
-
       }
+
+      socket.on('disconnect', function() {
+        for(let i=(players.length-1); i>=0; i--){
+          if(players[i].id == socket.id)
+            players.splice(i, 1);
+        }
+      });
 
     function reset(){
       io.sockets.emit('leaderboard', players);
       players.splice(0, players.length);
-      // for(let i=0; i<players.length; i++){
-      //   players[i].score = 0;
-      // }
       clearInterval();
       count = 1;
       countforPlayer = 1;
@@ -131,7 +128,6 @@ function newConnection(socket){
         }
       io.sockets.emit('welcome', bSendReset);
       }
-      console.log("reset");
     }
 
     }
