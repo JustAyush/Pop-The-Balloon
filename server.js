@@ -2,12 +2,24 @@
 var express = require('express');
 
 var app = express();
-var server = app.listen(8000);
+// var server = app.listen(8000);
+
+// app.use(express.static('public'));
+
+// var socket = require('socket.io');
+// var io = socket(server);
+
+var server = app.listen(process.env.PORT || 3000, listen);
+
+function listen() {
+  var host = server.address().address;
+  var port = server.address().port;
+  console.log('Example app listening at http://' + host + ':' + port);
+}
 
 app.use(express.static('public'));
 
-var socket = require('socket.io');
-var io = socket(server);
+var io = require('socket.io')(server);
 
 var balons = [];
 var count = 1;
@@ -133,9 +145,6 @@ function newConnection(socket){
     }
 
 console.log('Server is running');
-
-
-
 
 function getRandom(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
