@@ -23,11 +23,11 @@ function player(id, name, score){
   this.score = score;
 }
 
-for(let i=0; i<5; i++){
+for(let i=0; i<10; i++){
   var b= {
-    x: getRandom(0, 500),
+    x: getRandom(200, 600),
     y: getRandom(0, 500),
-    r: 20
+    r: getRandom(30, 40)
   };
   balons.push(b);
 }
@@ -47,7 +47,7 @@ function newConnection(socket){
 
       socket.on('player',
         function(data){
-          if(countforPlayer<4){
+          if(countforPlayer<9){
             countforPlayer++;
           }
           else{
@@ -64,7 +64,7 @@ function newConnection(socket){
 
       socket.on('remove',
       function(data){
-        if(count<=4)
+        if(count<=9)
           count++;
         else{
           io.sockets.emit('remove', data);
@@ -114,11 +114,11 @@ function newConnection(socket){
       countforPlayer = 1;
       playerAdded = false;
       firstPlayer = true;
-      for(let i=0; i<5; i++){
+      for(let i=0; i<10; i++){
         var b= {
-          x: getRandom(0, 500),
-          y: getRandom(0, 500),
-          r: 20
+          x: getRandom(200, 600),
+          y: getRandom(20, 500),
+          r: getRandom(30, 40)
         };
         balons.push(b);
       }

@@ -6,6 +6,18 @@ var canvas;
 var welcome = false;
 var scoreDisplay = [];
 var leaderboard;
+var diamond;
+var scoreDiv;
+var scorePos = 0;
+var about;
+var gameName;
+var metalSound;
+var x1, x2;
+
+function preload(){
+  diamond = loadImage('images/diamond.png');
+  metalSound = loadSound('music/metal.mp3');
+}
 
 function setup(){
   canvas = createCanvas(0.72*windowWidth, windowHeight);
@@ -13,13 +25,19 @@ function setup(){
   background(0);
 
   leaderboard = select('#leaderboard');
+  about = createP('How to play? <br/><br/>Collect the diamonds as fast as you can.<br/> The player with most diamonds is the winner.');
+  about.style('font-size', '18px');
+  about.position(0.86666*windowWidth, windowHeight/3);
+  gameName = select('.Game');
+  gameName.position(width/2,25);
+  gameName.style('z-index','1');
 
   socket = io.connect('http://localhost:8000');
   socket.on('greet', function(data){
     for(let i=0; i<data.length; i++){
       //console.log(data[i].name + " " + data[i].score);
       if(scoreDisplay.length > 0)
-        scoreDisplay[i].html(data[i].name + " " + data[i].score);
+        scoreDisplay[i].html(data[i].name + " :   " + data[i].score);
       }
   });
 
@@ -44,8 +62,14 @@ function setup(){
 
   socket.on('createP',
     function(data){
+      scoreDiv = createDiv('Scoreboard');
+      scoreDiv.position(20, windowHeight/3);
+      scoreDiv.style('font-size', '18px');
+      scorePos = windowHeight/3 + 35;
       for(let i=0; i<data; i++){
         var s = createP(' ');
+        s.position(20, scorePos);
+        scorePos += 30;
         scoreDisplay.push(s);
       }
     });
@@ -64,6 +88,8 @@ function setup(){
     for(let i=0; i<scoreDisplay.length; i++)
       scoreDisplay[i].remove();
     scoreDisplay.splice(0, scoreDisplay.length);
+    scoreDiv.remove();
+    scorePos = 0;
     resetGame();
   });
 
@@ -75,6 +101,9 @@ function setup(){
         leaderstat = leaderstat + data[i].name + " " + data[i].score + "<br/>";
       }
     leaderboard.html(leaderstat);
+    leaderboard.style('font-size', '22px');
+    leaderboard.style('color', '#f4511e');
+    leaderboard.style('margin-left', '30%');
   });
   function compare(a, b){
     if(a.score < b.score)
@@ -88,12 +117,9 @@ function setup(){
 }
 
 function draw(){
-  background(0);
-  // for(let i=0; i<5; i++){
-  //   noStroke();
-  //   fill(255);
-  //   ellipse(balloons[i].x, balloons[i].y, 2*balloons[i].r);
-  // }
+  x1 = map(mouseX, 0, width, 89, 210 );
+  x2 = map(mouseY, 0, height, 89, 220);
+  background(x1, x2, 255);
   if(play){
   if(welcome){
     for(let i=0; i<balloons.length; i++){
@@ -135,8 +161,8 @@ function mousePressed(){
   for(let i=(balloons.length-1); i>=0; i--){
   if(balloons[i].clicked(mouseX, mouseY)){
     socket.emit('remove', i);
+    metalSound.play();
     }
-
   }
 
 }

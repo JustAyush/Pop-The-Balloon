@@ -21,12 +21,13 @@
     }
   </style>
   <body onload="toggleModal()">
+    <div class='Game' style="font-size:30px; font-weight:bold; color:#f4511e;"> COLLECT THE DIAMONDS</div>
     <div class="modal">
     <div class="modal-content">
-        <p id="gameStarting"> Other players are connecting...</p>
+        <p id="gameStarting" style="font-size:20px; color:#f4511e; margin-left: 15px;"> Other players are connecting...</p>
         <p id="leaderboard"> </p>
         <p id="input">
-        <input type="text" id="name" />
+        <input type="text" id="name" maxlength="8" placeholder="Enter your name" autocomplete="off"/>
         <button id="start" onclick="startGame()"> Start </button>
         </p>
     </div>
@@ -46,12 +47,16 @@
   function startGame(){
   //  toggleModal();
   //  play = true;
-    name = document.getElementById("name").value;
-    socket.emit('player', name);
-    socket.emit('ready', "ready");
-    document.getElementById('gameStarting').style.visibility = "visible";
-    document.getElementById('input').style.visibility = "hidden";
-    document.getElementById('leaderboard').innerHTML = ' ';
+    if(document.getElementById('name').value == '')
+      alert('Name/Nickname input cannot be empty');
+    else{
+      name = document.getElementById("name").value;
+      socket.emit('player', name);
+      socket.emit('ready', "ready");
+      document.getElementById('gameStarting').style.visibility = "visible";
+      document.getElementById('input').style.visibility = "hidden";
+      document.getElementById('leaderboard').innerHTML = ' ';
+    }
   }
 
   function resetGame(){
